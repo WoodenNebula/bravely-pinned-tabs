@@ -46,14 +46,12 @@ function cancelPendingUnpinCheck(tabId) {
 async function init() {
   if (HAS_INITIALIZED) return;
   HAS_INITIALIZED = true;
-  console.log("===Initializing background script for Persistent Pinned Tabs===");
   // ensure storage keys exist
   const initObj = {};
   initObj[STORAGE_SNAP_KEY] = (await storageGet(STORAGE_SNAP_KEY))[STORAGE_SNAP_KEY] || {};
   initObj[STORAGE_FAV_CACHE] = (await storageGet(STORAGE_FAV_CACHE))[STORAGE_FAV_CACHE] || {};
   await storageSet(initObj);
 
-  console.log("Initialized: ", initObj);
   const tabs = await chrome.tabs.query({});
   for (const t of tabs) {
     // track pinned tabs metadata
@@ -82,7 +80,6 @@ async function init() {
         continue;
       }
 
-      console.log("Found placeholder tab during startup; reloading it to restore the placeholder content", t);
       chrome.tabs.reload(t.id, { bypassCache: true }, () => {
         void chrome.runtime.lastError;
       });
@@ -91,7 +88,6 @@ async function init() {
 }
 
 chrome.windows.onCreated.addListener((window) => {
-  console.log("Window created");
   HAS_INITIALIZED = false;
   init().catch((err) => console.error("Initialization failed", err));
 });
@@ -100,16 +96,13 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
   const placeholderBase = chrome.runtime.getURL("src/placeholder.html");
   // ignore if entire window is closing
   if (removeInfo.isWindowClosing) {
-    console.log("Tab Closed: Window closing, doing nothing", tabId, removeInfo);
     return;
   }
   cancelPendingUnpinCheck(tabId);
   const info = pinnedInfoByTabId.get(tabId);
   if (!info) {
-    console.log("Tab Closed: id not found in map", tabId, pinnedInfoByTabId);
     return;
   } else if (info.originalUrl.includes(placeholderBase)) {
-    console.log("Tab Closed: Placeholder tab closed, not creating new placeholder", tabId, removeInfo, info);
     return;
   }
   // Create a snapshot and placeholder
@@ -131,7 +124,6 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
     let activeTabId = null;
     try {
       const activeTabs = await chrome.tabs.query({ windowId: info.windowId, active: true });
-      console.log("Active tabs in window before creating placeholder", activeTabs);
       if (activeTabs && activeTabs[0]) activeTabId = activeTabs[0].id;
     } catch (e) {}
 
@@ -183,7 +175,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         try {
           const liveTab = await chrome.tabs.get(tabId);
           if (!liveTab || liveTab.pinned) return;
-          console.log("Tab unpinned by user, removing from tracking map", tabId, changeInfo, pinnedInfoByTabId);
           pinnedInfoByTabId.delete(tabId);
         } catch {
           // Tab disappeared before confirmation; onRemoved should handle cleanup.
@@ -256,12 +247,10 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
   // snapshot (that would cause other placeholders to lose their original
   // metadata during session restore). Remove only the in-memory mapping.
   if (removeInfo && removeInfo.isWindowClosing) {
-    console.log("Placeholder Tab removed due to window closing; keeping snapshot", tabId, snapshotId);
     placeholderTabToSnapshot.delete(tabId);
     return;
   }
 
-  console.log("Placeholder Tab removed", tabId, removeInfo);
   await removeSnapshot(snapshotId);
   placeholderTabToSnapshot.delete(tabId);
 });
