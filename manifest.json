@@ -1,0 +1,36 @@
+{
+    "name": "Bravely Pinned Tabs",
+    "description": "Pins a tab very hardly",
+    "version": "1.0.0",
+    "author": "WoodenNebula",
+    "homepage_url": "https://github.com/WoodenNebula/bravely-pinned-tabs",
+    "manifest_version": 3,
+    "permissions": [
+        "tabs",
+        "storage",
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "src/main.js"
+    },
+    "icons": {
+        "128": "images/icon_128.png"
+    },
+    "action": {},
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "src/placeholder.html",
+                "src/placeholder.js",
+                "images/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}

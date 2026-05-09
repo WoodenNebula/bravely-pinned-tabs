@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Placeholder</title>
+  <link rel="icon" id="page-favicon" href="../images/icon_128.png">
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff
+    }
+
+    .wrap {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #444
+    }
+
+    img.icon {
+      width: 64px;
+      height: 64px;
+      filter: grayscale(100%);
+      opacity: 0.9
+    }
+
+    .title {
+      margin-top: 12px;
+      font-size: 14px;
+      text-align: center;
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    /* Keep this page extremely low-resource; no animations, no timers */
+  </style>
+  <script src="favicon-util.js"></script>
+  <script src="placeholder.js" defer></script>
+</head>
+
+<body>
+  <div class="wrap" role="main">
+    <img id="fav" class="icon" src="../images/icon_128.png" alt="favicon" aria-hidden="true">
+    <div id="title" class="title">Restoring...</div>
+  </div>
+</body>
+
+</html>
