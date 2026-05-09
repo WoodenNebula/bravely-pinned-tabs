@@ -175,7 +175,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         try {
           const liveTab = await chrome.tabs.get(tabId);
           if (!liveTab || liveTab.pinned) return;
-          pinnedInfoByTabId.delete(tabId);
+            pinnedInfoByTabId.delete(tabId);
         } catch {
           // Tab disappeared before confirmation; onRemoved should handle cleanup.
         }

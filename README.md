@@ -2,6 +2,8 @@
 
 Actually pin your brave tabs.
 
+<img src="images/icon_128.png">
+
 ## Installation
 
 Clone the repo locally and load the unpacked extension from the root folder.
